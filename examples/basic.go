@@ -15,7 +15,7 @@ func main() {
 	)
 
 	// Initialize id generator
-	idg := idg.New(0)
+	idg := idg.New(uint64(1337))
 	// Get next ID
 	id := idg.Next()
 	// Get string representation of ID
