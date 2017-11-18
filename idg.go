@@ -116,13 +116,23 @@ func (id *ID) String() (out string) {
 	return
 }
 
+// IsEmpty will return if an ID is empty
+func (id *ID) IsEmpty() (empty bool) {
+	for i := 0; i < 16; i++ {
+		if (*id)[i] != 0 {
+			return
+		}
+	}
+	return true
+}
+
 // MarshalJSON is a JSON encoding helper func
-func (id *ID) MarshalJSON() (out []byte, err error) {
+func (id ID) MarshalJSON() (out []byte, err error) {
 	return json.Marshal(id.String())
 }
 
 // UnmarshalJSON is a JSON decoding helper func
-func (id *ID) UnmarshalJSON(in []byte) (err error) {
+func (id ID) UnmarshalJSON(in []byte) (err error) {
 	var str string
 	if err = json.Unmarshal(in, &str); err != nil {
 		return
