@@ -7,21 +7,26 @@ import (
 	"github.com/itsmontoya/mum"
 )
 
-// newID will return a new ID with the provided index and the current Unix timestamp
-func newID(idx uint64) (id ID) {
+// newID will return a new ID with the provided index and timestamp
+// Note: If timestamp is set to -1, the current Unix timestamp will
+// be utilized
+func newID(idx uint64, ts int64) (id ID) {
 	// Helper for binary encoding
 	var bw mum.BinaryWriter
-	// Current Unix timestamp (in seconds)
-	// Note: Seconds was decided to be utilized instead of nanoseconds
-	// To aid in an easier integration with Javascript for front-end clients
-	// utilizing idg. Technically, we could utilize milliseconds and maintain
-	// Javascript compatibility. That being said, seconds feels like a much
-	// more universal Unix time reference interval.
-	now := time.Now().Unix()
+	// Check if timestamp is set (or needs to be set)
+	if ts == -1 {
+		// Timestamp is set to -1, set timestamp to current Unix timestamp (in seconds)
+		// Note: Seconds was decided to be utilized instead of nanoseconds
+		// To aid in an easier integration with Javascript for front-end clients
+		// utilizing idg. Technically, we could utilize milliseconds and maintain
+		// Javascript compatibility. That being said, seconds feels like a much
+		// more universal Unix time reference interval.
+		ts = time.Now().Unix()
+	}
 	// Copy index bytes to first 8 bytes
 	copy(id[:8], bw.Uint64(idx))
 	// Copy unix timestamp bytes to last 8 bytes
-	copy(id[8:], bw.Int64(now))
+	copy(id[8:], bw.Int64(ts))
 	return
 }
 

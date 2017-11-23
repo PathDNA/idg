@@ -40,7 +40,7 @@ func (i *IDG) Next() (id ID) {
 	// We atomically increment our current index by one.
 	// It is safe to assume that our index is one less than the new value
 	idx := i.idx.Add(1) - 1
-	return newID(idx)
+	return newID(idx, -1)
 }
 
 // Parse will parse a string id
