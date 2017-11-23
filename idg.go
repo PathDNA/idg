@@ -14,8 +14,10 @@ const (
 )
 
 var (
+	// Base64 RawURLEncoding alias
+	b64 = base64.RawURLEncoding
 	// String length
-	strLen = base64.RawURLEncoding.EncodedLen(16)
+	strLen = b64.EncodedLen(16)
 )
 
 // New will return a new ID generator
