@@ -26,7 +26,7 @@ func New(idx uint64) (idg IDG) {
 	return
 }
 
-// IDG is an ID generator
+// IDG is an non-persistent atomic ID generator
 type IDG struct {
 	mux atoms.Mux
 	// Helper for binary encoding
@@ -41,10 +41,4 @@ func (i *IDG) Next() (id ID) {
 	// It is safe to assume that our index is one less than the new value
 	idx := i.idx.Add(1) - 1
 	return newID(idx, -1)
-}
-
-// Parse will parse a string id
-func Parse(in string) (id ID, err error) {
-	err = id.parse([]byte(in))
-	return
 }
