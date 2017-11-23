@@ -7,6 +7,18 @@ import (
 	"github.com/itsmontoya/mum"
 )
 
+func newID(idx uint64) (id ID) {
+	// Current Unix timestamp (in nanoseconds)
+	now := time.Now().Unix()
+	// Helper for binary encoding
+	var bw mum.BinaryWriter
+	// Copy index bytes to first 8 bytes
+	copy(id[:8], bw.Uint64(idx))
+	// Copy unix timestamp bytes to last 8 bytes
+	copy(id[8:], bw.Int64(now))
+	return
+}
+
 // ID represents an id
 type ID [16]byte
 

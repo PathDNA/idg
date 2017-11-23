@@ -2,7 +2,6 @@ package idg
 
 import (
 	"encoding/base64"
-	"time"
 
 	"github.com/PathDNA/atoms"
 	"github.com/itsmontoya/mum"
@@ -40,18 +39,6 @@ func (i *IDG) Next() (id ID) {
 	// It is safe to assume that our index is one less than the new value
 	idx := i.idx.Add(1) - 1
 	return newID(idx)
-}
-
-func newID(idx uint64) (id ID) {
-	// Current Unix timestamp (in nanoseconds)
-	now := time.Now().Unix()
-	// Helper for binary encoding
-	var bw mum.BinaryWriter
-	// Copy index bytes to first 8 bytes
-	copy(id[:8], bw.Uint64(idx))
-	// Copy unix timestamp bytes to last 8 bytes
-	copy(id[8:], bw.Int64(now))
-	return
 }
 
 // Parse will parse a string id
