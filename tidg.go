@@ -16,7 +16,7 @@ func NewTIDG(key string, fm turtleDB.FuncsMap) (t TIDG) {
 	return
 }
 
-// TIDG is an non-persistent atomic ID generator
+// TIDG is a persistent turtleDB-based ID generator
 type TIDG struct {
 	// Helper for binary encoding
 	bw mum.BinaryWriter
