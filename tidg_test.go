@@ -97,3 +97,68 @@ func TestTIDGIndexing(t *testing.T) {
 	}
 
 }
+
+func BenchmarkTIDG_Gen(b *testing.B) {
+	var (
+		db  turtleDB.DB
+		err error
+	)
+
+	// Initialize basic funcsmap
+	fm := turtleDB.FuncsMap{}
+	// Initialize a new instance of tidg
+	tidg := NewTIDG("test", fm)
+
+	if db, err = turtleDB.New("tidg_test", "./test_data", fm); err != nil {
+		return
+	}
+	defer os.RemoveAll("./test_data")
+	defer db.Close()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		if err = db.Update(func(txn turtleDB.Txn) (err error) {
+			idSink, err = tidg.Next(txn)
+			return
+		}); err != nil {
+			// Error encountered, bail out
+			b.Fatal(err)
+		}
+	}
+
+	b.ReportAllocs()
+}
+
+func BenchmarkTIDG_Gen_Para(b *testing.B) {
+	var (
+		db  turtleDB.DB
+		err error
+	)
+
+	// Initialize basic funcsmap
+	fm := turtleDB.FuncsMap{}
+	// Initialize a new instance of tidg
+	tidg := NewTIDG("test", fm)
+
+	if db, err = turtleDB.New("tidg_test", "./test_data", fm); err != nil {
+		return
+	}
+	defer os.RemoveAll("./test_data")
+	defer db.Close()
+	b.ResetTimer()
+
+	b.RunParallel(func(pb *testing.PB) {
+		var err error
+		for pb.Next() {
+			if err = db.Update(func(txn turtleDB.Txn) (err error) {
+				idSink, err = tidg.Next(txn)
+				return
+			}); err != nil {
+				// Error encountered, bail out
+				b.Fatal(err)
+			}
+		}
+	})
+
+	b.ReportAllocs()
+}
