@@ -15,7 +15,7 @@ func TestIDTime(t *testing.T) {
 	// Get a current timestamp
 	now := time.Now()
 	// Ensure our new ID is at least one millisecond behind our timestamp
-	time.Sleep(time.Millisecond)
+	time.Sleep(time.Second)
 	// Generate a new ID
 	id := newID(0, -1)
 	// Get the time from our ID
@@ -70,4 +70,34 @@ func TestJSON(t *testing.T) {
 	if id != nid {
 		t.Fatalf("ID's do not match: %v / %v", id.Bytes(), nid.Bytes())
 	}
+}
+
+func TestJSONStruct(t *testing.T) {
+	var (
+		ts  testStruct
+		b   []byte
+		err error
+	)
+
+	// Generate an ID with the index starting at 1337
+	id := newID(1337, -1)
+	ts.ID = &id
+	// Marshal ID as JSON
+	if b, err = json.Marshal(&ts); err != nil {
+		t.Fatal(err)
+	}
+
+	var nts testStruct
+	// Parse as JSON to a new ID
+	if err = json.Unmarshal(b, &nts); err != nil {
+		t.Fatal(err)
+	}
+	// Check if the ID's match
+	if *ts.ID != *nts.ID {
+		t.Fatalf("ID's do not match: %v / %v", ts.ID.Bytes(), nts.ID.Bytes())
+	}
+}
+
+type testStruct struct {
+	ID *ID `json:"id"`
 }
