@@ -49,15 +49,6 @@ func BenchmarkIDG_Gen(b *testing.B) {
 	b.ReportAllocs()
 }
 
-func BenchmarkUUID_Gen(b *testing.B) {
-	ug := uuid.NewGen()
-	for i := 0; i < b.N; i++ {
-		uuidSink = ug.New()
-	}
-
-	b.ReportAllocs()
-}
-
 func BenchmarkIDG_Gen_Para(b *testing.B) {
 	idg := New(0)
 	b.RunParallel(func(pb *testing.PB) {
@@ -65,6 +56,15 @@ func BenchmarkIDG_Gen_Para(b *testing.B) {
 			idSink = idg.Next()
 		}
 	})
+
+	b.ReportAllocs()
+}
+
+func BenchmarkUUID_Gen(b *testing.B) {
+	ug := uuid.NewGen()
+	for i := 0; i < b.N; i++ {
+		uuidSink = ug.New()
+	}
 
 	b.ReportAllocs()
 }
