@@ -18,6 +18,8 @@ var (
 	b64 = base64.RawURLEncoding
 	// String length
 	strLen = b64.EncodedLen(16)
+	// Empty ID used for matching
+	emptyID = ID{}
 )
 
 // New will return a new ID generator
