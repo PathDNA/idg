@@ -61,7 +61,7 @@ func (id *ID) Index() (idx uint64, err error) {
 		return
 	}
 	// Grab the index from the first 8 bytes
-	return br.Uint64((*id)[:8])
+	return br.Uint64(id[:8])
 }
 
 // Time will return the time.Time of an ID
@@ -79,7 +79,7 @@ func (id *ID) Time() (t time.Time, err error) {
 		return
 	}
 	// Grab the Unix timestamp from the last 8 bytes
-	if ts, err = br.Int64((*id)[8:]); err != nil {
+	if ts, err = br.Int64(id[8:]); err != nil {
 		return
 	}
 
@@ -96,7 +96,7 @@ func (id *ID) Bytes() (out []byte) {
 		return
 	}
 
-	out = (*id)[:]
+	out = id[:]
 	return
 }
 
@@ -114,19 +114,7 @@ func (id *ID) String() (out string) {
 
 // IsEmpty will return if an ID is empty
 func (id *ID) IsEmpty() (empty bool) {
-	if id == nil {
-		return true
-	}
-
-	// Iterate through each of the ID bytes
-	for i := 0; i < 16; i++ {
-		if (*id)[i] != 0 {
-			// The value at this index is a non-zero value, return early (false)
-			return
-		}
-	}
-	// We made it to the end without finding any non-zero entries, return true
-	return true
+	return id == nil || *id == emptyID
 }
 
 // MarshalJSON is a JSON encoding helper func
