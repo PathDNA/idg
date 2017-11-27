@@ -130,14 +130,12 @@ func (id *ID) MarshalJSON() (out []byte, err error) {
 // UnmarshalJSON is a JSON decoding helper func
 func (id *ID) UnmarshalJSON(in []byte) (err error) {
 	var str string
+	// Unmarshal inbound value as a string
 	if err = json.Unmarshal(in, &str); err != nil {
 		return
 	}
-
+	// Strip double-quotation from head and tail
 	stripped := in[1 : len(in)-1]
-	if err = id.parse(stripped); err != nil {
-		return
-	}
-
-	return
+	// Return result of the parsed value
+	return id.parse(stripped)
 }
