@@ -2,7 +2,6 @@ package idg
 
 import (
 	"encoding/base64"
-	"time"
 
 	"github.com/PathDNA/atoms"
 	"github.com/itsmontoya/mum"
@@ -15,10 +14,12 @@ const (
 )
 
 var (
-	// Base64 encoder alias
+	// Base64 RawURLEncoding alias
 	b64 = base64.RawURLEncoding
 	// String length
 	strLen = b64.EncodedLen(16)
+	// Empty ID used for matching
+	emptyID = ID{}
 )
 
 // New will return a new ID generator
@@ -27,7 +28,7 @@ func New(idx uint64) (idg IDG) {
 	return
 }
 
-// IDG is an ID generator
+// IDG is an non-persistent atomic ID generator
 type IDG struct {
 	mux atoms.Mux
 	// Helper for binary encoding
@@ -41,23 +42,5 @@ func (i *IDG) Next() (id ID) {
 	// We atomically increment our current index by one.
 	// It is safe to assume that our index is one less than the new value
 	idx := i.idx.Add(1) - 1
-	return newID(idx)
-}
-
-func newID(idx uint64) (id ID) {
-	// Current Unix timestamp (in nanoseconds)
-	now := time.Now().Unix()
-	// Helper for binary encoding
-	var bw mum.BinaryWriter
-	// Copy index bytes to first 8 bytes
-	copy(id[:8], bw.Uint64(idx))
-	// Copy unix timestamp bytes to last 8 bytes
-	copy(id[8:], bw.Int64(now))
-	return
-}
-
-// Parse will parse a string id
-func Parse(in string) (id ID, err error) {
-	err = id.parse([]byte(in))
-	return
+	return newID(idx, -1)
 }
