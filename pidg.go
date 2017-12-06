@@ -98,6 +98,27 @@ func (p *PIDG) Next() (id ID, err error) {
 	return
 }
 
+// Next32 will return the next 32-bit id
+func (p *PIDG) Next32() (id ID32, err error) {
+	var idx uint64
+	p.mux.Update(func() {
+		idx = p.idx
+		// Perist value to disk
+		if err = p.persist(); err != nil {
+			return
+		}
+		// Increment index value
+		p.idx++
+	})
+	// Break early if error exists
+	if err != nil {
+		return
+	}
+	// Set id with the retrieved index (utilizing a current timestamp)
+	id = newID32(uint32(idx), -1)
+	return
+}
+
 // Close will close the internal file
 func (p *PIDG) Close() (err error) {
 	p.mux.Update(func() {

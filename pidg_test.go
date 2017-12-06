@@ -59,6 +59,16 @@ func TestPIDGIndexing(t *testing.T) {
 	if err = testIndex(id, 3); err != nil {
 		t.Fatal(err)
 	}
+
+	var id32 ID32
+	if id32, err = pidg.Next32(); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = testIndex32(id32, 4); err != nil {
+		t.Fatal(err)
+	}
+
 }
 
 func BenchmarkPIDG_Gen(b *testing.B) {
