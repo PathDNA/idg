@@ -45,3 +45,11 @@ func (i *IDG) Next() (id ID) {
 	idx := i.idx.Add(1) - 1
 	return newID(idx, -1)
 }
+
+// Next32 will return the next 32-bit id
+func (i *IDG) Next32() (id ID32) {
+	// We atomically increment our current index by one.
+	// It is safe to assume that our index is one less than the new value
+	idx := i.idx.Add(1) - 1
+	return newID32(uint32(idx), -1)
+}
