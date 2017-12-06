@@ -16,6 +16,7 @@ func TestIDGIndexing(t *testing.T) {
 	var err error
 	// Generate new ID with an index starting at 3
 	idg := New(3)
+	// Test 64 bit
 	if err = testIndex(idg.Next(), 3); err != nil {
 		t.Fatal(err)
 	}
@@ -27,10 +28,33 @@ func TestIDGIndexing(t *testing.T) {
 	if err = testIndex(idg.Next(), 5); err != nil {
 		t.Fatal(err)
 	}
+
+	if err = testIndex32(idg.Next32(), 6); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = testIndex32(idg.Next32(), 7); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = testIndex32(idg.Next32(), 8); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func testIndex(id ID, expected uint64) (err error) {
 	var idx uint64
+	if idx, err = id.Index(); err != nil {
+		return
+	} else if idx != expected {
+		return fmt.Errorf("invalid index, expected %d and received %d", expected, idx)
+	}
+
+	return
+}
+
+func testIndex32(id ID32, expected uint32) (err error) {
+	var idx uint32
 	if idx, err = id.Index(); err != nil {
 		return
 	} else if idx != expected {
