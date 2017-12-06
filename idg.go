@@ -19,7 +19,8 @@ var (
 	// String length
 	strLen = b64.EncodedLen(16)
 	// Empty ID used for matching
-	emptyID = ID{}
+	emptyID   = ID{}
+	emptyID32 = ID32{}
 )
 
 // New will return a new ID generator
