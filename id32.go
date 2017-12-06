@@ -10,7 +10,7 @@ import (
 // newID32 will return a new ID with the provided index and timestamp
 // Note: If timestamp is set to -1, the current Unix timestamp will
 // be utilized
-func newID32(idx uint64, ts int64) (id ID) {
+func newID32(idx uint32, ts int64) (id ID32) {
 	// Helper for binary encoding
 	var bw mum.BinaryWriter
 	// Check if timestamp is set (or needs to be set)
@@ -47,7 +47,7 @@ func (id *ID32) parse(in []byte) (err error) {
 }
 
 // Index will return the index of an ID
-func (id *ID32) Index() (idx uint64, err error) {
+func (id *ID32) Index() (idx uint32, err error) {
 	// Helper for binary decoding
 	var br mum.BinaryReader
 	// Check if ID is nil
@@ -57,7 +57,7 @@ func (id *ID32) Index() (idx uint64, err error) {
 		return
 	}
 	// Grab the index from the first 8 bytes
-	return br.Uint64(id[:8])
+	return br.Uint32(id[:4])
 }
 
 // Time will return the time.Time of an ID
@@ -66,7 +66,7 @@ func (id *ID32) Time() (t time.Time, err error) {
 		// Helper for binary decoding
 		br mum.BinaryReader
 		// Timestamp
-		ts int64
+		ts uint32
 	)
 	// Check if ID is nil
 	if id == nil {
@@ -75,12 +75,12 @@ func (id *ID32) Time() (t time.Time, err error) {
 		return
 	}
 	// Grab the Unix timestamp from the last 8 bytes
-	if ts, err = br.Int64(id[8:]); err != nil {
+	if ts, err = br.Uint32(id[4:]); err != nil {
 		return
 	}
 
 	// Parse Unix timestamp (as nanoseconds)
-	t = time.Unix(ts, 0)
+	t = time.Unix(int64(ts), 0)
 	return
 }
 
